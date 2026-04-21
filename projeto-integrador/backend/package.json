@@ -1,0 +1,16 @@
+{
+  "name": "projeto-integrador-backend",
+  "version": "1.0.0",
+  "description": "Backend inicial do Projeto Integrador",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "node",
+    "estoque",
+    "projeto-integrador"
+  ],
+  "author": "",
+  "license": "MIT"
+}
