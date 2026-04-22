@@ -17,11 +17,26 @@ npm start
 
 Servidor disponível em: `http://localhost:3000`
 
+## Frontend (acesso correto)
+
+> **Importante**: `localhost:3000` executa o backend. Para abrir as telas React:
+
+### Modo desenvolvimento (recomendado)
+1. No backend: `npm start`
+2. No frontend: `npm install && npm run dev`
+3. Acesse: `http://localhost:5173`
+
+### Modo build estático servido pelo backend
+1. No frontend: `npm install && npm run build`
+2. No backend: `npm start`
+3. Acesse: `http://localhost:3000/app`
+
 ## Endpoints implementados
 
 ### Utilitários
 - `GET /`
 - `GET /health`
+- `GET /app` (orientação quando frontend dist não existe)
 
 ### Fornecedores (CRUD)
 - `POST /api/fornecedores`
@@ -48,44 +63,4 @@ Servidor disponível em: `http://localhost:3000`
 ```bash
 npm run lint
 npm test
-```
-
-## Como testar manualmente (curl)
-
-### 1) Cadastrar fornecedor
-```bash
-curl -X POST http://localhost:3000/api/fornecedores \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomeEmpresa": "Fornecedor XPTO",
-    "cnpj": "12.345.678/0001-90",
-    "endereco": "Rua A, 100",
-    "telefone": "(11) 99999-0000",
-    "email": "contato@xpto.com",
-    "contatoPrincipal": "Maria Silva"
-  }'
-```
-
-### 2) Cadastrar produto
-```bash
-curl -X POST http://localhost:3000/api/produtos \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nome": "Arroz 1kg",
-    "codigoBarras": "7890001112223",
-    "descricao": "Arroz tipo 1",
-    "quantidadeEstoque": 25,
-    "categoria": "Alimentos"
-  }'
-```
-
-### 3) Associar fornecedor ao produto
-```bash
-curl -X POST http://localhost:3000/api/associacoes/produtos/1/fornecedores/1
-```
-
-### 4) Consultar associação nos dois sentidos
-```bash
-curl http://localhost:3000/api/associacoes/produtos/1/fornecedores
-curl http://localhost:3000/api/associacoes/fornecedores/1/produtos
 ```

@@ -11,15 +11,27 @@ Frontend da Fase 3 em React + Vite, consumindo o backend da Fase 2.
 npm install
 ```
 
-## Execução
+## Execução (modo desenvolvimento)
 
 ```bash
 npm run dev
 ```
 
-Aplicação em `http://localhost:5173`.
+Acesse em: `http://localhost:5173`
 
-## Configuração do backend
+> Não acessar `http://localhost:3000/index.html`.
+> Essa porta pertence ao backend Express.
+
+## Build para servir no backend
+
+```bash
+npm run build
+```
+
+Depois do build, com backend rodando, acesse:
+- `http://localhost:3000/app`
+
+## Configuração da API
 
 Por padrão, a aplicação usa `http://localhost:3000`.
 

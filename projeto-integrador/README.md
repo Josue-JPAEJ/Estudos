@@ -15,3 +15,9 @@
 - [x] Página de Fornecedor consumindo backend
 - [x] Página de Produto consumindo backend
 - [x] Página de Associação consumindo backend
+
+## Como executar corretamente
+
+- Backend API: `http://localhost:3000`
+- Frontend em desenvolvimento: `http://localhost:5173`
+- Frontend build servido pelo backend: `http://localhost:3000/app`

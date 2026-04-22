@@ -62,8 +62,17 @@ test('deve retornar metadados da API na rota raiz', async () => {
 
   assert.equal(res.status, 200);
   assert.equal(res.body.message, 'API Projeto Integrador em execução.');
+  assert.equal(res.body.frontend.dev, 'http://localhost:5173');
 });
 
+
+
+test('deve orientar acesso ao frontend quando dist não existir', async () => {
+  const res = await requestJson({ method: 'GET', endpoint: '/app' });
+
+  assert.equal(res.status, 503);
+  assert.match(res.body.message, /Frontend não compilado/);
+});
 test('deve cadastrar fornecedor com sucesso', async () => {
   const res = await requestJson({
     method: 'POST',

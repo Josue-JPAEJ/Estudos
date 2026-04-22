@@ -1,8 +1,31 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const { initDatabase } = require('./src/database');
 const fornecedoresRouter = require('./src/routes/fornecedores');
 const produtosRouter = require('./src/routes/produtos');
 const associacoesRouter = require('./src/routes/associacoes');
+
+function setupFrontendRoutes(app) {
+  const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
+
+  if (fs.existsSync(frontendDistPath)) {
+    app.use('/app', express.static(frontendDistPath));
+
+    app.get('/app/*', (_req, res) => {
+      res.sendFile(path.join(frontendDistPath, 'index.html'));
+    });
+
+    return;
+  }
+
+  app.get('/app', (_req, res) => {
+    res.status(503).json({
+      message: 'Frontend não compilado. Execute "npm run build" na pasta frontend e acesse /app.',
+      frontendDevUrl: 'http://localhost:5173',
+    });
+  });
+}
 
 function createApp() {
   const app = express();
@@ -13,6 +36,10 @@ function createApp() {
     res.json({
       message: 'API Projeto Integrador em execução.',
       endpointsBase: ['/api/fornecedores', '/api/produtos', '/api/associacoes'],
+      frontend: {
+        dev: 'http://localhost:5173',
+        build: '/app',
+      },
     });
   });
 
@@ -23,6 +50,8 @@ function createApp() {
   app.use('/api/fornecedores', fornecedoresRouter);
   app.use('/api/produtos', produtosRouter);
   app.use('/api/associacoes', associacoesRouter);
+
+  setupFrontendRoutes(app);
 
   app.use((err, _req, res, _next) => {
     console.error(err);
