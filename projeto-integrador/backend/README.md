@@ -64,3 +64,14 @@ Servidor disponível em: `http://localhost:3000`
 npm run lint
 npm test
 ```
+
+
+## CORS (frontend em desenvolvimento)
+
+O backend permite por padrão a origem `http://localhost:5173`.
+
+Para alterar, configure a variável:
+
+```bash
+FRONTEND_ORIGIN=http://seu-host:porta
+```

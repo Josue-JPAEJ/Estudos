@@ -12,10 +12,10 @@ const { initDatabase, getDb } = require('../src/database');
 let server;
 let baseUrl;
 
-async function requestJson({ method, endpoint, body }) {
+async function requestJson({ method, endpoint, body, headers }) {
   const response = await fetch(`${baseUrl}${endpoint}`, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...(headers || {}) },
     body: body ? JSON.stringify(body) : undefined,
   });
 
@@ -25,6 +25,7 @@ async function requestJson({ method, endpoint, body }) {
   return {
     status: response.status,
     body: parsedBody,
+    headers: response.headers,
   };
 }
 
@@ -57,12 +58,32 @@ test.after(async () => {
   if (fs.existsSync(tempDbFile)) fs.unlinkSync(tempDbFile);
 });
 
+
+
+test('deve responder CORS para origem do frontend', async () => {
+  const response = await fetch(`${baseUrl}/api/fornecedores`, {
+    method: 'OPTIONS',
+    headers: {
+      Origin: 'http://localhost:5173',
+      'Access-Control-Request-Method': 'GET',
+      'Access-Control-Request-Headers': 'Content-Type',
+    },
+  });
+
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get('access-control-allow-origin'), 'http://localhost:5173');
+});
 test('deve retornar metadados da API na rota raiz', async () => {
-  const res = await requestJson({ method: 'GET', endpoint: '/' });
+  const res = await requestJson({
+    method: 'GET',
+    endpoint: '/',
+    headers: { Origin: 'http://localhost:5173' },
+  });
 
   assert.equal(res.status, 200);
   assert.equal(res.body.message, 'API Projeto Integrador em execução.');
   assert.equal(res.body.frontend.dev, 'http://localhost:5173');
+  assert.equal(res.headers.get('access-control-allow-origin'), 'http://localhost:5173');
 });
 
 

@@ -6,6 +6,31 @@ const fornecedoresRouter = require('./src/routes/fornecedores');
 const produtosRouter = require('./src/routes/produtos');
 const associacoesRouter = require('./src/routes/associacoes');
 
+
+function setupCors(app) {
+  const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_ORIGIN,
+  ].filter(Boolean);
+
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+
+    if (origin && allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    }
+
+    if (req.method === 'OPTIONS') {
+      return res.status(204).end();
+    }
+
+    return next();
+  });
+}
+
 function setupFrontendRoutes(app) {
   const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
 
@@ -31,6 +56,8 @@ function createApp() {
   const app = express();
 
   app.use(express.json());
+
+  setupCors(app);
 
   app.get('/', (_req, res) => {
     res.json({
