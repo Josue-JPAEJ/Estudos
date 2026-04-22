@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import ActionIconButton from '../components/ActionIconButton';
+import { Pencil, Trash2 } from '../components/Icons';
 
 const initialForm = {
   nome: '',
@@ -68,8 +70,11 @@ export default function ProdutoPage() {
   }
 
   return (
-    <section>
-      <h2>Cadastro de Produto</h2>
+    <section className="surface-card">
+      <div className="section-header">
+        <h3>Cadastro de Produto</h3>
+        <p>Gerencie dados comerciais e disponibilidade com atualização em tempo real.</p>
+      </div>
       {feedback && <p className="feedback">{feedback}</p>}
 
       <form className="grid-form" onSubmit={salvar}>
@@ -108,8 +113,10 @@ export default function ProdutoPage() {
               <td>{produto.categoria}</td>
               <td>{produto.quantidade_estoque}</td>
               <td>
-                <button onClick={() => preencherEdicao(produto)}>Editar</button>
-                <button onClick={() => remover(produto.id)}>Remover</button>
+                <div className="table-actions">
+                  <ActionIconButton label="Editar produto" icon={Pencil} onClick={() => preencherEdicao(produto)} />
+                  <ActionIconButton label="Remover produto" icon={Trash2} variant="danger" onClick={() => remover(produto.id)} />
+                </div>
               </td>
             </tr>
           ))}

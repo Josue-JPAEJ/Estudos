@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import ActionIconButton from '../components/ActionIconButton';
+import { Unlink } from '../components/Icons';
 
 export default function AssociacaoPage() {
   const [produtos, setProdutos] = useState([]);
@@ -92,8 +94,11 @@ export default function AssociacaoPage() {
   }
 
   return (
-    <section>
-      <h2>Associação de Fornecedor a Produto</h2>
+    <section className="surface-card">
+      <div className="section-header">
+        <h3>Associação de Fornecedor a Produto</h3>
+        <p>Crie vínculos muitos-para-muitos sem perder visibilidade operacional.</p>
+      </div>
       {feedback && <p className="feedback">{feedback}</p>}
 
       <div className="grid-form">
@@ -139,7 +144,14 @@ export default function AssociacaoPage() {
                   <td>{fornecedor.nome_empresa}</td>
                   <td>{fornecedor.cnpj}</td>
                   <td>
-                    <button onClick={() => desassociarPorProduto(fornecedor.id)}>Desassociar</button>
+                    <div className="table-actions">
+                      <ActionIconButton
+                        label="Desassociar fornecedor"
+                        icon={Unlink}
+                        variant="danger"
+                        onClick={() => desassociarPorProduto(fornecedor.id)}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -165,7 +177,14 @@ export default function AssociacaoPage() {
                   <td>{produto.nome}</td>
                   <td>{produto.codigo_barras}</td>
                   <td>
-                    <button onClick={() => desassociarPorFornecedor(produto.id)}>Desassociar</button>
+                    <div className="table-actions">
+                      <ActionIconButton
+                        label="Desassociar produto"
+                        icon={Unlink}
+                        variant="danger"
+                        onClick={() => desassociarPorFornecedor(produto.id)}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}

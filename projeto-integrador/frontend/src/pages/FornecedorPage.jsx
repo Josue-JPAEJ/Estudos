@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import ActionIconButton from '../components/ActionIconButton';
+import { Pencil, Trash2 } from '../components/Icons';
 import { formatCnpj, formatTelefone } from '../utils/masks';
 
 const initialForm = {
@@ -69,8 +71,11 @@ export default function FornecedorPage() {
   }
 
   return (
-    <section>
-      <h2>Cadastro de Fornecedor</h2>
+    <section className="surface-card">
+      <div className="section-header">
+        <h3>Cadastro de Fornecedor</h3>
+        <p>Mantenha fornecedores consistentes para garantir rastreabilidade de origem.</p>
+      </div>
       {feedback && <p className="feedback">{feedback}</p>}
 
       <form className="grid-form" onSubmit={salvar}>
@@ -107,8 +112,10 @@ export default function FornecedorPage() {
               <td>{formatCnpj(fornecedor.cnpj)}</td>
               <td>{fornecedor.contato_principal}</td>
               <td>
-                <button onClick={() => preencherEdicao(fornecedor)}>Editar</button>
-                <button onClick={() => remover(fornecedor.id)}>Remover</button>
+                <div className="table-actions">
+                  <ActionIconButton label="Editar fornecedor" icon={Pencil} onClick={() => preencherEdicao(fornecedor)} />
+                  <ActionIconButton label="Remover fornecedor" icon={Trash2} variant="danger" onClick={() => remover(fornecedor.id)} />
+                </div>
               </td>
             </tr>
           ))}
