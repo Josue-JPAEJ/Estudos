@@ -44,7 +44,7 @@ VITE_API_BASE_URL=http://localhost:3000
 ## Páginas implementadas
 - Cadastro de Fornecedor (criar, editar, remover e listar)
 - Cadastro de Produto (criar, editar, remover e listar)
-- Associação Produto/Fornecedor (associar, desassociar e listar associados)
+- Associação Produto/Fornecedor (associar, desassociar, filtrar por produto e filtrar por fornecedor)
 
 
 ## Validação

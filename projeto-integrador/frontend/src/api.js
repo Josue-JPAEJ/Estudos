@@ -32,4 +32,5 @@ export const api = {
   desassociarFornecedor: (produtoId, fornecedorId) =>
     request(`/api/associacoes/produtos/${produtoId}/fornecedores/${fornecedorId}`, { method: 'DELETE' }),
   listarFornecedoresDoProduto: (produtoId) => request(`/api/associacoes/produtos/${produtoId}/fornecedores`),
+  listarProdutosDoFornecedor: (fornecedorId) => request(`/api/associacoes/fornecedores/${fornecedorId}/produtos`),
 };

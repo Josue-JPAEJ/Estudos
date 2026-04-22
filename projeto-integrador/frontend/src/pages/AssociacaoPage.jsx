@@ -6,7 +6,8 @@ export default function AssociacaoPage() {
   const [fornecedores, setFornecedores] = useState([]);
   const [produtoSelecionado, setProdutoSelecionado] = useState('');
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState('');
-  const [associados, setAssociados] = useState([]);
+  const [fornecedoresDoProduto, setFornecedoresDoProduto] = useState([]);
+  const [produtosDoFornecedor, setProdutosDoFornecedor] = useState([]);
   const [feedback, setFeedback] = useState('');
 
   async function carregarDadosBase() {
@@ -19,14 +20,24 @@ export default function AssociacaoPage() {
     setFornecedores(fornecedoresResp.data);
   }
 
-  async function carregarAssociados(produtoId) {
+  async function carregarFornecedoresDoProduto(produtoId) {
     if (!produtoId) {
-      setAssociados([]);
+      setFornecedoresDoProduto([]);
       return;
     }
 
     const response = await api.listarFornecedoresDoProduto(produtoId);
-    setAssociados(response.data);
+    setFornecedoresDoProduto(response.data);
+  }
+
+  async function carregarProdutosDoFornecedor(fornecedorId) {
+    if (!fornecedorId) {
+      setProdutosDoFornecedor([]);
+      return;
+    }
+
+    const response = await api.listarProdutosDoFornecedor(fornecedorId);
+    setProdutosDoFornecedor(response.data);
   }
 
   useEffect(() => {
@@ -34,24 +45,47 @@ export default function AssociacaoPage() {
   }, []);
 
   useEffect(() => {
-    carregarAssociados(produtoSelecionado).catch((error) => setFeedback(error.message));
+    carregarFornecedoresDoProduto(produtoSelecionado).catch((error) => setFeedback(error.message));
   }, [produtoSelecionado]);
+
+  useEffect(() => {
+    carregarProdutosDoFornecedor(fornecedorSelecionado).catch((error) => setFeedback(error.message));
+  }, [fornecedorSelecionado]);
 
   async function associar() {
     try {
       await api.associarFornecedor(produtoSelecionado, fornecedorSelecionado);
       setFeedback('Fornecedor associado com sucesso ao produto!');
-      await carregarAssociados(produtoSelecionado);
+      await Promise.all([
+        carregarFornecedoresDoProduto(produtoSelecionado),
+        carregarProdutosDoFornecedor(fornecedorSelecionado),
+      ]);
     } catch (error) {
       setFeedback(error.message);
     }
   }
 
-  async function desassociar(fornecedorId) {
+  async function desassociarPorProduto(fornecedorId) {
     try {
       await api.desassociarFornecedor(produtoSelecionado, fornecedorId);
       setFeedback('Fornecedor desassociado com sucesso!');
-      await carregarAssociados(produtoSelecionado);
+      await Promise.all([
+        carregarFornecedoresDoProduto(produtoSelecionado),
+        fornecedorSelecionado ? carregarProdutosDoFornecedor(fornecedorSelecionado) : Promise.resolve(),
+      ]);
+    } catch (error) {
+      setFeedback(error.message);
+    }
+  }
+
+  async function desassociarPorFornecedor(produtoId) {
+    try {
+      await api.desassociarFornecedor(produtoId, fornecedorSelecionado);
+      setFeedback('Produto desassociado com sucesso do fornecedor!');
+      await Promise.all([
+        carregarProdutosDoFornecedor(fornecedorSelecionado),
+        produtoSelecionado ? carregarFornecedoresDoProduto(produtoSelecionado) : Promise.resolve(),
+      ]);
     } catch (error) {
       setFeedback(error.message);
     }
@@ -88,26 +122,57 @@ export default function AssociacaoPage() {
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Fornecedor</th>
-            <th>CNPJ</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {associados.map((fornecedor) => (
-            <tr key={fornecedor.id}>
-              <td>{fornecedor.nome_empresa}</td>
-              <td>{fornecedor.cnpj}</td>
-              <td>
-                <button onClick={() => desassociar(fornecedor.id)}>Desassociar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {produtoSelecionado && (
+        <>
+          <h3>Fornecedores do Produto</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Fornecedor</th>
+                <th>CNPJ</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fornecedoresDoProduto.map((fornecedor) => (
+                <tr key={fornecedor.id}>
+                  <td>{fornecedor.nome_empresa}</td>
+                  <td>{fornecedor.cnpj}</td>
+                  <td>
+                    <button onClick={() => desassociarPorProduto(fornecedor.id)}>Desassociar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      {fornecedorSelecionado && (
+        <>
+          <h3>Produtos do Fornecedor</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Código de Barras</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {produtosDoFornecedor.map((produto) => (
+                <tr key={produto.id}>
+                  <td>{produto.nome}</td>
+                  <td>{produto.codigo_barras}</td>
+                  <td>
+                    <button onClick={() => desassociarPorFornecedor(produto.id)}>Desassociar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </section>
   );
 }

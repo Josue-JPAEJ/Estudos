@@ -210,6 +210,7 @@ test('deve associar e consultar associação nos dois sentidos', async () => {
 
   assert.equal(produtosDoFornecedor.status, 200);
   assert.equal(produtosDoFornecedor.body.data.length, 1);
+  assert.equal(produtosDoFornecedor.body.data[0].nome, 'Arroz 5kg');
 
   const desassociar = await requestJson({
     method: 'DELETE',
