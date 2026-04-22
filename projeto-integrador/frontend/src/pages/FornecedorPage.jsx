@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import { formatCnpj, formatTelefone } from '../utils/masks';
 
 const initialForm = {
   nomeEmpresa: '',
@@ -29,9 +30,9 @@ export default function FornecedorPage() {
     setEditingId(fornecedor.id);
     setForm({
       nomeEmpresa: fornecedor.nome_empresa,
-      cnpj: fornecedor.cnpj,
+      cnpj: formatCnpj(fornecedor.cnpj),
       endereco: fornecedor.endereco,
-      telefone: fornecedor.telefone,
+      telefone: formatTelefone(fornecedor.telefone),
       email: fornecedor.email,
       contatoPrincipal: fornecedor.contato_principal,
     });
@@ -74,9 +75,9 @@ export default function FornecedorPage() {
 
       <form className="grid-form" onSubmit={salvar}>
         <input placeholder="Insira o nome da empresa" value={form.nomeEmpresa} onChange={(e) => setForm({ ...form, nomeEmpresa: e.target.value })} required />
-        <input placeholder="00.000.000/0000-00" value={form.cnpj} onChange={(e) => setForm({ ...form, cnpj: e.target.value })} required />
+        <input placeholder="00.000.000/0000-00" value={form.cnpj} onChange={(e) => setForm({ ...form, cnpj: formatCnpj(e.target.value) })} required />
         <input placeholder="Insira o endereço completo da empresa" value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} required />
-        <input placeholder="(00) 0000-0000" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} required />
+        <input placeholder="(00) 0000-0000" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: formatTelefone(e.target.value) })} required />
         <input placeholder="exemplo@fornecedor.com" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         <input placeholder="Nome do contato principal" value={form.contatoPrincipal} onChange={(e) => setForm({ ...form, contatoPrincipal: e.target.value })} required />
 
@@ -103,7 +104,7 @@ export default function FornecedorPage() {
           {fornecedores.map((fornecedor) => (
             <tr key={fornecedor.id}>
               <td>{fornecedor.nome_empresa}</td>
-              <td>{fornecedor.cnpj}</td>
+              <td>{formatCnpj(fornecedor.cnpj)}</td>
               <td>{fornecedor.contato_principal}</td>
               <td>
                 <button onClick={() => preencherEdicao(fornecedor)}>Editar</button>

@@ -1,8 +1,29 @@
 const express = require('express');
 const { getDb } = require('../database');
-const { validateFornecedor } = require('../validation');
+const { validateFornecedor, formatCnpj, formatTelefone, onlyDigits } = require('../validation');
 
 const router = express.Router();
+
+async function buscarDuplicidadeCnpj(db, cnpj, ignoreId = null) {
+  const fornecedores = await db.all('SELECT id, cnpj FROM fornecedores');
+  const cnpjDigits = onlyDigits(cnpj);
+
+  return fornecedores.find((fornecedor) => {
+    if (ignoreId && fornecedor.id === ignoreId) return false;
+    return onlyDigits(fornecedor.cnpj) === cnpjDigits;
+  });
+}
+
+function normalizarFornecedor(payload) {
+  return {
+    nomeEmpresa: payload.nomeEmpresa.trim(),
+    cnpj: formatCnpj(payload.cnpj),
+    endereco: payload.endereco.trim(),
+    telefone: formatTelefone(payload.telefone),
+    email: payload.email.trim(),
+    contatoPrincipal: payload.contatoPrincipal.trim(),
+  };
+}
 
 router.post('/', async (req, res) => {
   const payload = req.body;
@@ -16,7 +37,9 @@ router.post('/', async (req, res) => {
   }
 
   const db = await getDb();
-  const existing = await db.get('SELECT id FROM fornecedores WHERE cnpj = ?', payload.cnpj.trim());
+  const normalized = normalizarFornecedor(payload);
+
+  const existing = await buscarDuplicidadeCnpj(db, normalized.cnpj);
 
   if (existing) {
     return res.status(409).json({
@@ -27,12 +50,12 @@ router.post('/', async (req, res) => {
   const result = await db.run(
     `INSERT INTO fornecedores (nome_empresa, cnpj, endereco, telefone, email, contato_principal)
      VALUES (?, ?, ?, ?, ?, ?)`,
-    payload.nomeEmpresa.trim(),
-    payload.cnpj.trim(),
-    payload.endereco.trim(),
-    payload.telefone.trim(),
-    payload.email.trim(),
-    payload.contatoPrincipal.trim()
+    normalized.nomeEmpresa,
+    normalized.cnpj,
+    normalized.endereco,
+    normalized.telefone,
+    normalized.email,
+    normalized.contatoPrincipal
   );
 
   const created = await db.get('SELECT * FROM fornecedores WHERE id = ?', result.lastID);
@@ -82,17 +105,14 @@ router.put('/:id', async (req, res) => {
   }
 
   const db = await getDb();
-  const current = await db.get('SELECT id, cnpj FROM fornecedores WHERE id = ?', id);
+  const current = await db.get('SELECT id FROM fornecedores WHERE id = ?', id);
 
   if (!current) {
     return res.status(404).json({ message: 'Fornecedor não encontrado.' });
   }
 
-  const duplicate = await db.get(
-    'SELECT id FROM fornecedores WHERE cnpj = ? AND id <> ?',
-    payload.cnpj.trim(),
-    id
-  );
+  const normalized = normalizarFornecedor(payload);
+  const duplicate = await buscarDuplicidadeCnpj(db, normalized.cnpj, id);
 
   if (duplicate) {
     return res.status(409).json({ message: 'Fornecedor com esse CNPJ já está cadastrado!' });
@@ -102,12 +122,12 @@ router.put('/:id', async (req, res) => {
     `UPDATE fornecedores
        SET nome_empresa = ?, cnpj = ?, endereco = ?, telefone = ?, email = ?, contato_principal = ?
      WHERE id = ?`,
-    payload.nomeEmpresa.trim(),
-    payload.cnpj.trim(),
-    payload.endereco.trim(),
-    payload.telefone.trim(),
-    payload.email.trim(),
-    payload.contatoPrincipal.trim(),
+    normalized.nomeEmpresa,
+    normalized.cnpj,
+    normalized.endereco,
+    normalized.telefone,
+    normalized.email,
+    normalized.contatoPrincipal,
     id
   );
 

@@ -2,13 +2,56 @@ function isNonEmptyString(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
+function onlyDigits(value) {
+  return String(value || '').replace(/\D/g, '');
+}
+
+function formatCnpj(value) {
+  const digits = onlyDigits(value).slice(0, 14);
+
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 5) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+  if (digits.length <= 8) return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5)}`;
+  if (digits.length <= 12) return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8)}`;
+
+  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12, 14)}`;
+}
+
+function formatTelefone(value) {
+  const digits = onlyDigits(value).slice(0, 11);
+
+  if (digits.length <= 2) return digits;
+
+  const ddd = digits.slice(0, 2);
+
+  if (digits.length <= 6) {
+    return `(${ddd}) ${digits.slice(2)}`;
+  }
+
+  if (digits.length <= 10) {
+    return `(${ddd}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+
+  return `(${ddd}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
 function validateFornecedor(payload) {
   const errors = {};
 
   if (!isNonEmptyString(payload.nomeEmpresa)) errors.nomeEmpresa = 'Nome da empresa é obrigatório.';
-  if (!isNonEmptyString(payload.cnpj)) errors.cnpj = 'CNPJ é obrigatório.';
+
+  const cnpjDigits = onlyDigits(payload.cnpj);
+  if (cnpjDigits.length !== 14) {
+    errors.cnpj = 'CNPJ deve conter 14 dígitos.';
+  }
+
   if (!isNonEmptyString(payload.endereco)) errors.endereco = 'Endereço é obrigatório.';
-  if (!isNonEmptyString(payload.telefone)) errors.telefone = 'Telefone é obrigatório.';
+
+  const telefoneDigits = onlyDigits(payload.telefone);
+  if (!(telefoneDigits.length === 10 || telefoneDigits.length === 11)) {
+    errors.telefone = 'Telefone deve conter 10 ou 11 dígitos (com DDD).';
+  }
+
   if (!isNonEmptyString(payload.email)) errors.email = 'E-mail é obrigatório.';
   if (!isNonEmptyString(payload.contatoPrincipal)) errors.contatoPrincipal = 'Contato principal é obrigatório.';
 
@@ -32,4 +75,7 @@ function validateProduto(payload) {
 module.exports = {
   validateFornecedor,
   validateProduto,
+  formatCnpj,
+  formatTelefone,
+  onlyDigits,
 };

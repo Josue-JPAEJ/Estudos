@@ -100,9 +100,9 @@ test('deve cadastrar fornecedor com sucesso', async () => {
     endpoint: '/api/fornecedores',
     body: {
       nomeEmpresa: 'Fornecedor XPTO',
-      cnpj: '12.345.678/0001-90',
+      cnpj: '12345678000190',
       endereco: 'Rua A, 100',
-      telefone: '(11) 99999-0000',
+      telefone: '11999990000',
       email: 'contato@xpto.com',
       contatoPrincipal: 'Maria Silva',
     },
@@ -110,6 +110,8 @@ test('deve cadastrar fornecedor com sucesso', async () => {
 
   assert.equal(res.status, 201);
   assert.equal(res.body.message, 'Fornecedor cadastrado com sucesso!');
+  assert.equal(res.body.data.cnpj, '12.345.678/0001-90');
+  assert.equal(res.body.data.telefone, '(11) 99999-0000');
 });
 
 test('não deve cadastrar fornecedor com CNPJ duplicado', async () => {
@@ -118,7 +120,7 @@ test('não deve cadastrar fornecedor com CNPJ duplicado', async () => {
     endpoint: '/api/fornecedores',
     body: {
       nomeEmpresa: 'Fornecedor XPTO Duplicado',
-      cnpj: '12.345.678/0001-90',
+      cnpj: '12345678000190',
       endereco: 'Rua B, 100',
       telefone: '(11) 98888-0000',
       email: 'duplicado@xpto.com',
@@ -136,7 +138,7 @@ test('deve atualizar fornecedor com sucesso', async () => {
     endpoint: '/api/fornecedores/1',
     body: {
       nomeEmpresa: 'Fornecedor XPTO Atualizado',
-      cnpj: '12.345.678/0001-90',
+      cnpj: '12345678000190',
       endereco: 'Rua A, 1000',
       telefone: '(11) 95555-0000',
       email: 'novo@xpto.com',

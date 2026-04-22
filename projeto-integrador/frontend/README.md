@@ -52,3 +52,8 @@ VITE_API_BASE_URL=http://localhost:3000
 ```bash
 npm run lint
 ```
+
+
+## Máscaras de entrada
+
+Na tela de fornecedores, os campos CNPJ e Telefone aplicam máscara durante digitação e também na edição de registros existentes.
