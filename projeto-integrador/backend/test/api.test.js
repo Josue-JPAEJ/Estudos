@@ -57,6 +57,13 @@ test.after(async () => {
   if (fs.existsSync(tempDbFile)) fs.unlinkSync(tempDbFile);
 });
 
+test('deve retornar metadados da API na rota raiz', async () => {
+  const res = await requestJson({ method: 'GET', endpoint: '/' });
+
+  assert.equal(res.status, 200);
+  assert.equal(res.body.message, 'API Projeto Integrador em execução.');
+});
+
 test('deve cadastrar fornecedor com sucesso', async () => {
   const res = await requestJson({
     method: 'POST',
@@ -93,6 +100,25 @@ test('não deve cadastrar fornecedor com CNPJ duplicado', async () => {
   assert.equal(res.body.message, 'Fornecedor com esse CNPJ já está cadastrado!');
 });
 
+test('deve atualizar fornecedor com sucesso', async () => {
+  const res = await requestJson({
+    method: 'PUT',
+    endpoint: '/api/fornecedores/1',
+    body: {
+      nomeEmpresa: 'Fornecedor XPTO Atualizado',
+      cnpj: '12.345.678/0001-90',
+      endereco: 'Rua A, 1000',
+      telefone: '(11) 95555-0000',
+      email: 'novo@xpto.com',
+      contatoPrincipal: 'Maria Souza',
+    },
+  });
+
+  assert.equal(res.status, 200);
+  assert.equal(res.body.message, 'Fornecedor atualizado com sucesso!');
+  assert.equal(res.body.data.nome_empresa, 'Fornecedor XPTO Atualizado');
+});
+
 test('deve cadastrar produto com sucesso', async () => {
   const res = await requestJson({
     method: 'POST',
@@ -110,22 +136,48 @@ test('deve cadastrar produto com sucesso', async () => {
   assert.equal(res.body.message, 'Produto cadastrado com sucesso!');
 });
 
-test('deve associar e desassociar fornecedor de produto', async () => {
+test('deve atualizar produto com sucesso', async () => {
+  const res = await requestJson({
+    method: 'PUT',
+    endpoint: '/api/produtos/1',
+    body: {
+      nome: 'Arroz 5kg',
+      codigoBarras: '7890001112223',
+      descricao: 'Arroz tipo 1 premium',
+      quantidadeEstoque: 40,
+      categoria: 'Alimentos',
+      dataValidade: '2027-12-31',
+    },
+  });
+
+  assert.equal(res.status, 200);
+  assert.equal(res.body.message, 'Produto atualizado com sucesso!');
+  assert.equal(res.body.data.nome, 'Arroz 5kg');
+});
+
+test('deve associar e consultar associação nos dois sentidos', async () => {
   const associar = await requestJson({
     method: 'POST',
     endpoint: '/api/associacoes/produtos/1/fornecedores/1',
   });
 
   assert.equal(associar.status, 201);
-  assert.equal(associar.body.message, 'Fornecedor associado com sucesso ao produto!');
 
-  const listar = await requestJson({
+  const fornecedoresDoProduto = await requestJson({
     method: 'GET',
     endpoint: '/api/associacoes/produtos/1/fornecedores',
   });
 
-  assert.equal(listar.status, 200);
-  assert.equal(listar.body.data.length, 1);
+  assert.equal(fornecedoresDoProduto.status, 200);
+  assert.equal(fornecedoresDoProduto.body.data.length, 1);
+
+  const produtosDoFornecedor = await requestJson({
+    method: 'GET',
+    endpoint: '/api/associacoes/fornecedores/1/produtos',
+  });
+
+  assert.equal(produtosDoFornecedor.status, 200);
+  assert.equal(produtosDoFornecedor.body.data.length, 1);
 
   const desassociar = await requestJson({
     method: 'DELETE',
@@ -134,4 +186,22 @@ test('deve associar e desassociar fornecedor de produto', async () => {
 
   assert.equal(desassociar.status, 200);
   assert.equal(desassociar.body.message, 'Fornecedor desassociado com sucesso!');
+});
+
+test('deve remover produto e fornecedor com sucesso', async () => {
+  const deleteProduto = await requestJson({
+    method: 'DELETE',
+    endpoint: '/api/produtos/1',
+  });
+
+  assert.equal(deleteProduto.status, 200);
+  assert.equal(deleteProduto.body.message, 'Produto removido com sucesso!');
+
+  const deleteFornecedor = await requestJson({
+    method: 'DELETE',
+    endpoint: '/api/fornecedores/1',
+  });
+
+  assert.equal(deleteFornecedor.status, 200);
+  assert.equal(deleteFornecedor.body.message, 'Fornecedor removido com sucesso!');
 });

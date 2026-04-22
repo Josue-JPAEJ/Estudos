@@ -1,9 +1,9 @@
 # FACULDADE GRAN (https://faculdade.grancursosonline.com.br/)
 ## Projeto Disciplina Projeto Integrador
 
-Implementação inicial da Fase 2 (Backend) com API REST para:
-- Cadastro de fornecedores
-- Cadastro de produtos
+Implementação da Fase 2 (Backend) com API REST para:
+- Cadastro de fornecedores (CRUD)
+- Cadastro de produtos (CRUD)
 - Associação produto/fornecedor (N:N)
 
 ## Estrutura
@@ -14,7 +14,8 @@ Implementação inicial da Fase 2 (Backend) com API REST para:
 ## Status atual
 
 - [x] Banco SQLite configurado com tabelas `fornecedores`, `produtos` e `produto_fornecedor`
-- [x] Endpoints iniciais implementados
-- [x] Testes de integração básicos
-- [ ] CRUD completo (update/delete/listagem detalhada)
+- [x] CRUD de fornecedores
+- [x] CRUD de produtos
+- [x] Associação N:N (produto ↔ fornecedor) com consulta nos dois sentidos
+- [x] Testes de integração para fluxos principais
 - [ ] Construção das telas no frontend

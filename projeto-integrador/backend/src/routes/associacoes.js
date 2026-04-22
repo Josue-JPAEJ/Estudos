@@ -87,4 +87,25 @@ router.get('/produtos/:produtoId/fornecedores', async (req, res) => {
   return res.json({ data: fornecedores });
 });
 
+router.get('/fornecedores/:fornecedorId/produtos', async (req, res) => {
+  const fornecedorId = Number(req.params.fornecedorId);
+
+  if (!Number.isInteger(fornecedorId)) {
+    return res.status(400).json({ message: 'ID do fornecedor inválido.' });
+  }
+
+  const db = await getDb();
+
+  const produtos = await db.all(
+    `SELECT p.id, p.nome, p.codigo_barras, p.descricao, p.categoria, p.quantidade_estoque
+     FROM produtos p
+     INNER JOIN produto_fornecedor pf ON pf.produto_id = p.id
+     WHERE pf.fornecedor_id = ?
+     ORDER BY p.nome`,
+    fornecedorId
+  );
+
+  return res.json({ data: produtos });
+});
+
 module.exports = router;

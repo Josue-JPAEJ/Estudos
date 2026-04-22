@@ -1,7 +1,7 @@
 # Backend - Projeto Integrador
 
 ## Requisitos
-- Node.js LTS (>= 18)
+- Node.js LTS (>= 20)
 
 ## Instalação
 
@@ -19,18 +19,29 @@ Servidor disponível em: `http://localhost:3000`
 
 ## Endpoints implementados
 
-### Fornecedores
+### Utilitários
+- `GET /`
+- `GET /health`
+
+### Fornecedores (CRUD)
 - `POST /api/fornecedores`
 - `GET /api/fornecedores`
+- `GET /api/fornecedores/:id`
+- `PUT /api/fornecedores/:id`
+- `DELETE /api/fornecedores/:id`
 
-### Produtos
+### Produtos (CRUD)
 - `POST /api/produtos`
 - `GET /api/produtos`
+- `GET /api/produtos/:id`
+- `PUT /api/produtos/:id`
+- `DELETE /api/produtos/:id`
 
-### Associação produto/fornecedor
+### Associação produto/fornecedor (N:N)
 - `POST /api/associacoes/produtos/:produtoId/fornecedores/:fornecedorId`
 - `DELETE /api/associacoes/produtos/:produtoId/fornecedores/:fornecedorId`
 - `GET /api/associacoes/produtos/:produtoId/fornecedores`
+- `GET /api/associacoes/fornecedores/:fornecedorId/produtos`
 
 ## Testes e validações
 
@@ -73,12 +84,8 @@ curl -X POST http://localhost:3000/api/produtos \
 curl -X POST http://localhost:3000/api/associacoes/produtos/1/fornecedores/1
 ```
 
-### 4) Listar fornecedores do produto
+### 4) Consultar associação nos dois sentidos
 ```bash
 curl http://localhost:3000/api/associacoes/produtos/1/fornecedores
-```
-
-### 5) Desassociar fornecedor do produto
-```bash
-curl -X DELETE http://localhost:3000/api/associacoes/produtos/1/fornecedores/1
+curl http://localhost:3000/api/associacoes/fornecedores/1/produtos
 ```

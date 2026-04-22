@@ -9,6 +9,13 @@ function createApp() {
 
   app.use(express.json());
 
+  app.get('/', (_req, res) => {
+    res.json({
+      message: 'API Projeto Integrador em execução.',
+      endpointsBase: ['/api/fornecedores', '/api/produtos', '/api/associacoes'],
+    });
+  });
+
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok' });
   });
