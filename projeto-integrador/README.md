@@ -1,16 +1,20 @@
 # FACULDADE GRAN (https://faculdade.grancursosonline.com.br/)
 ## Projeto Disciplina Projeto Integrador
 
-Estrutura inicial do projeto full stack conforme o documento da disciplina.
+Implementação inicial da Fase 2 (Backend) com API REST para:
+- Cadastro de fornecedores
+- Cadastro de produtos
+- Associação produto/fornecedor (N:N)
 
 ## Estrutura
 
-- `backend/`: API Node.js para controle de estoque.
-- `frontend/`: aplicação React para interface de usuário.
+- `backend/`: API Node.js + Express + SQLite
+- `frontend/`: preparação da aplicação React
 
-## Próximos passos
+## Status atual
 
-1. Configurar banco SQLite no backend.
-2. Implementar CRUD de produtos e fornecedores.
-3. Implementar associação produto/fornecedor (N:N).
-4. Conectar frontend às rotas do backend.
+- [x] Banco SQLite configurado com tabelas `fornecedores`, `produtos` e `produto_fornecedor`
+- [x] Endpoints iniciais implementados
+- [x] Testes de integração básicos
+- [ ] CRUD completo (update/delete/listagem detalhada)
+- [ ] Construção das telas no frontend
