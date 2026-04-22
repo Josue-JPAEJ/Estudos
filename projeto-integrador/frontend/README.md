@@ -45,3 +45,10 @@ VITE_API_BASE_URL=http://localhost:3000
 - Cadastro de Fornecedor (criar, editar, remover e listar)
 - Cadastro de Produto (criar, editar, remover e listar)
 - Associação Produto/Fornecedor (associar, desassociar e listar associados)
+
+
+## Validação
+
+```bash
+npm run lint
+```
