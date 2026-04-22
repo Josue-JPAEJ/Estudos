@@ -1,0 +1,23 @@
+{
+  "name": "projeto-integrador-backend",
+  "version": "1.0.0",
+  "description": "Backend inicial do Projeto Integrador",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "lint": "node --check app.js src/database.js src/validation.js src/routes/*.js test/*.test.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "node",
+    "estoque",
+    "projeto-integrador"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
