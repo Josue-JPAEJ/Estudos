@@ -75,3 +75,12 @@ Para alterar, configure a variável:
 ```bash
 FRONTEND_ORIGIN=http://seu-host:porta
 ```
+
+
+## Seed de dados
+
+Para popular o banco com 5 fornecedores e 3 produtos por fornecedor (15 produtos e 15 associações):
+
+```bash
+npm run seed
+```

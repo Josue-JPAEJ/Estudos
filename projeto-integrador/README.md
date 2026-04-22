@@ -21,3 +21,13 @@
 - Backend API: `http://localhost:3000`
 - Frontend em desenvolvimento: `http://localhost:5173`
 - Frontend build servido pelo backend: `http://localhost:3000/app`
+
+
+## Popular dados iniciais
+
+No backend, execute:
+
+```bash
+cd backend
+npm run seed
+```

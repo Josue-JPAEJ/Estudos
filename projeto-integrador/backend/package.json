@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "lint": "node --check app.js src/database.js src/validation.js src/routes/*.js test/*.test.js",
-    "test": "node --test"
+    "lint": "node --check app.js src/database.js src/seed.js src/validation.js src/routes/*.js test/*.test.js",
+    "test": "node --test",
+    "seed": "node src/seed.js"
   },
   "keywords": [
     "node",
